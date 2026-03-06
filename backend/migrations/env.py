@@ -28,9 +28,7 @@ from config import settings
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-# Override sqlalchemy.url with the one from our config (escaped % for configparser)
-safe_url = settings.DATABASE_URL.replace("%", "%%")
-config.set_main_option("sqlalchemy.url", safe_url)
+# We bypass config.set_main_option here to completely avoid ConfigParser % interpolation errors
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -50,7 +48,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = settings.DATABASE_URL
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -69,15 +67,16 @@ def do_run_migrations(connection: Connection) -> None:
         context.run_migrations()
 
 
+from sqlalchemy.ext.asyncio import create_async_engine
+
 async def run_async_migrations() -> None:
     """In this scenario we need to create an Engine
     and associate a connection with the context.
 
     """
 
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    connectable = create_async_engine(
+        settings.DATABASE_URL,
         poolclass=pool.NullPool,
     )
 
