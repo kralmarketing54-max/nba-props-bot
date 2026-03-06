@@ -28,8 +28,9 @@ from config import settings
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-# Override sqlalchemy.url with the one from our config
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Override sqlalchemy.url with the one from our config (escaped % for configparser)
+safe_url = settings.DATABASE_URL.replace("%", "%%")
+config.set_main_option("sqlalchemy.url", safe_url)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
