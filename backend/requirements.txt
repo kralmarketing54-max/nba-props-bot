@@ -1,0 +1,25 @@
+# ===========================================
+# NBA Props App - Python Bağımlılıkları
+# ===========================================
+
+# --- Web Framework ---
+fastapi
+uvicorn[standard]
+asyncpg
+SQLAlchemy[asyncio]
+alembic
+
+## Cache & Data
+redis
+httpx
+
+## Validation & Settings
+pydantic
+pydantic-settings
+
+## Background Tasks
+apscheduler
+
+## Environment Variables
+python-dotenv
+python-dateutil
