@@ -36,6 +36,15 @@ target_metadata = Base.metadata
 # ... etc.
 
 
+import os
+# Hardcoded loading of url to bypass ALL parser logic
+raw_url = os.getenv("DATABASE_URL")
+if raw_url and "%" in raw_url:
+    # Just in case ConfigParser still messes with it
+    target_url = raw_url.replace("%", "%%")
+else:
+    target_url = settings.DATABASE_URL.replace("%", "%%")
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
@@ -48,7 +57,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = settings.DATABASE_URL
+    url = target_url
     context.configure(
         url=url,
         target_metadata=target_metadata,
